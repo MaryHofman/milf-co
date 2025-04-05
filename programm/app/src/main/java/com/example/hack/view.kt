@@ -169,8 +169,8 @@ fun Menu(appState: MutableState<AppState> = mutableStateOf(AppState.MENU),
                     .fillMaxWidth()
                     .border(
                         width = 3.dp,
-                    color = Color.Black,
-                    shape = RoundedCornerShape(10.dp)
+                        color = Color.Black,
+                        shape = RoundedCornerShape(10.dp)
                     )
                     .clip(RoundedCornerShape(10.dp))
                 ) {

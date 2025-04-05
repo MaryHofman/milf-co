@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -40,7 +41,8 @@ android {
 }
 
 dependencies {
-    implementation (libs.postgresql.v42220)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.bom)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlinx.coroutines.core.v164)
     implementation(libs.androidx.core.ktx)
