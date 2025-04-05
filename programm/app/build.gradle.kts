@@ -42,7 +42,11 @@ android {
 
 dependencies {
     implementation(libs.firebase.analytics)
-    implementation(libs.firebase.bom)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.messaging)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlinx.coroutines.core.v164)
     implementation(libs.androidx.core.ktx)

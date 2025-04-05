@@ -39,23 +39,24 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hack.db.connectToDatabase
 import com.example.hack.db.getByUrlAndUser
+import com.example.hack.db.registeredUser
+import com.example.hack.db.signInUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.sql.ResultSet
 
 @Composable
-fun Aurorized(appState: MutableState<AppState>,
-              context: Context,
-              onRegisterClick: (String, String, String) -> Unit,
-              onLoginClick: () -> Unit
-              ) {
-    var name by remember { mutableStateOf("") }
+fun Authorization(
+    appState: MutableState<AppState>,
+    context: Context
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -74,16 +75,6 @@ fun Aurorized(appState: MutableState<AppState>,
         )
 
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Имя") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
@@ -99,11 +90,10 @@ fun Aurorized(appState: MutableState<AppState>,
             onValueChange = { password = it },
             label = { Text("Пароль") },
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = if (passwordVisible) {
-                PasswordVisualTransformation()
-            } else {
-                PasswordVisualTransformation()
-            },
+            visualTransformation = if (passwordVisible)
+                VisualTransformation.None
+            else
+                PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -122,11 +112,10 @@ fun Aurorized(appState: MutableState<AppState>,
             onValueChange = { confirmPassword = it },
             label = { Text("Подтвердите пароль") },
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = if (passwordVisible) {
-                PasswordVisualTransformation()
-            } else {
-                PasswordVisualTransformation()
-            },
+            visualTransformation = if (passwordVisible)
+                VisualTransformation.None
+            else
+                PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
 
@@ -135,18 +124,18 @@ fun Aurorized(appState: MutableState<AppState>,
         Button(
             onClick = {
                 if (password == confirmPassword) {
-                    onRegisterClick(name, email, password)
+                    registeredUser(email, password, context, appState)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = name.isNotBlank() && email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
+            enabled = email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
         ) {
             Text("Зарегистрироваться")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = onLoginClick) {
+        TextButton(onClick = { appState.value = AppState.SIGNIN }) {
             Text("Уже есть аккаунт? Войти")
         }
     }
@@ -214,6 +203,74 @@ fun Menu(appState: MutableState<AppState> = mutableStateOf(AppState.MENU),
     }
 }
 
+@Composable
+fun SignIn(appState: MutableState<AppState>, context: Context) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Вход в аккаунт",
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Пароль") },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = if (passwordVisible) {
+                PasswordVisualTransformation()
+            } else {
+                PasswordVisualTransformation()
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        if (passwordVisible) Icons.Default.Lock else Icons.Default.Close,
+                        contentDescription = if (passwordVisible) "Скрыть пароль" else "Показать пароль"
+                    )
+                }
+            }
+        )
+
+        Button(
+            onClick = {
+                signInUser(email, password, context, appState)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = email.isNotBlank() && password.isNotBlank()
+        ) {
+            Text("Войти")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextButton(onClick = { appState.value = AppState.AUTORIZED }) {
+            Text("Нет аккаунта? Зарегистрируйтесь!")
+        }
+    }
+}
+
 fun dishargeVideo(urls: MutableState<MutableList<String>>) {
     val url = ""
     val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -242,6 +299,7 @@ fun UrlView(url: MutableState<String>) {
 
 enum class AppState {
                     AUTORIZED,
+                    SIGNIN,
                     MENU,
                     URL
 }
