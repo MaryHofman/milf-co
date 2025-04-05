@@ -13,7 +13,7 @@ fun connectToDatabase(url: String, user: String, password: String): Connection? 
     }
 }
 
-fun executeQuery(connection: Connection) {
+fun executeQuery(connection: Connection, file_url: String, user_id: Int) {
     val statement: Statement = connection.createStatement()
     val resultSet = statement.executeQuery(
         """
@@ -28,7 +28,7 @@ fun executeQuery(connection: Connection) {
                     chat_id,
                     user_id
                 FROM transcriptions
-                WHERE file_url = ? AND user_id = ?
+                WHERE file_url = $file_url AND user_id = $user_id
             ) t
     """
     )

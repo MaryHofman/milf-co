@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 //            }
 
             val connection = connectToDatabase("", "admin", "0000")
-            connection?.let { executeQuery(connection) }
+            connection?.let { executeQuery(connection, "", 0) }
         }
     }
 }
