@@ -2,6 +2,7 @@ package com.example.hack.db
 
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.ResultSet
 import java.sql.Statement
 
 fun connectToDatabase(url: String, user: String, password: String): Connection? {
@@ -13,7 +14,7 @@ fun connectToDatabase(url: String, user: String, password: String): Connection? 
     }
 }
 
-fun executeQuery(connection: Connection, file_url: String, user_id: Int) {
+fun getByUrlAndUser(connection: Connection, file_url: String, user_id: Int): ResultSet? {
     val statement: Statement = connection.createStatement()
     val resultSet = statement.executeQuery(
         """
@@ -32,7 +33,5 @@ fun executeQuery(connection: Connection, file_url: String, user_id: Int) {
             ) t
     """
     )
-    while (resultSet.next()) {
-        println(resultSet.getString("column_name"))
-    }
+    return resultSet
 }
