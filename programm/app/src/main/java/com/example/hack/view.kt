@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
@@ -44,8 +43,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.hack.db.connectToDatabase
 import com.example.hack.db.getByUrlAndUser
 import com.example.hack.db.registeredUser
@@ -124,7 +121,6 @@ fun Authorization(navController: NavController) {
         Button(
             onClick = {
                 if (password == confirmPassword) {
-                    navController.navigate("details")
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -135,7 +131,6 @@ fun Authorization(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = { navController.navigate("signIn") }) {
             Text("Уже есть аккаунт? Войти")
         }
     }
@@ -152,9 +147,6 @@ fun Menu(navController: NavController) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
-            items(urls.value.size) { index ->
-                Row(
-                    Modifier
                         .padding(5.dp)
                         .fillMaxWidth()
                         .border(
@@ -173,7 +165,6 @@ fun Menu(navController: NavController) {
                     )
                     IconButton(
                         onClick = {
-                            navController.navigate("url/${urls.value[index]}")
                         },
                         content = {
                             Icon(
@@ -190,9 +181,6 @@ fun Menu(navController: NavController) {
         }
 
         IconButton(
-            onClick = {
-                dishargeVideo(urls)
-            },
             content = {
                 Icon(
                     Icons.Default.AddCircle,
@@ -286,31 +274,6 @@ fun dishargeVideo(urls: MutableState<MutableList<String>>) {
     urls.value.add(url)
 }
 
-//fun requestBD(url: String): ResultSet? {
-//
-//   val connect = connectToDatabase(urlDB, "", "")
-//    return connect?.let { getByUrlAndUser(connect, url, user_id) }
-//}
-//
-//@Composable
-//fun UrlView(url: String, navController: NavController) {
-//    val result = requestBD(url)
-//
-//    Box(Modifier.fillMaxSize()) {
-//        if (result == null) {
-//            Text("Данные не найдены")
-//        } else {
-//            Text("Обработанные данные: $result")
-//        }
-//
-//        IconButton(
-//            onClick = { navController.popBackStack() },
-//            modifier = Modifier.align(Alignment.TopStart)
-//        ) {
-//            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-//        }
-//    }
-//}
 
 enum class AppState {
                     AUTORIZED,
@@ -318,4 +281,3 @@ enum class AppState {
                     MENU,
                     URL
 }
-
